@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watchlist</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+
+<body>
+    <!-- box wrapper -->
+    <div>
+        <!-- image -->
+        <div>
+            <!-- overlay and content -->
+            <div>
+                <!-- Info Div -->
+                <div>
+                    <h2>Title</h2>
+                    <p>Run Time</p>
+                </div>
+                <!-- Hover Content -->
+                <div>
+                    <button>
+                        <!-- Eye Icon Toggle -->
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <ul>
+    </ul>
+    <!-- The core Firebase JS SDK is always required and must be listed first -->
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-firestore.js"></script>
+
+    <script>
+        // Your web app's Firebase configuration
+        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+        var firebaseConfig = {
+            apiKey: "AIzaSyDX_LnE3GSqGg_u6TDcCzN30e7gI9a10hY",
+            authDomain: "ohads-project.firebaseapp.com",
+            projectId: "ohads-project",
+            storageBucket: "ohads-project.appspot.com",
+            messagingSenderId: "576782438123",
+            appId: "1:576782438123:web:50bd273576085a9574b8ae",
+            measurementId: "G-ZJ6P6KXLK3"
+        };
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+    </script>
+
+    <script src="scripts/api.js"></script>
+    <script src="scripts/data.js"></script>
+    <script src="scripts/ui.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+
+</html>
