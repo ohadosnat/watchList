@@ -1,0 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600&display=swap');
+/* TailwindCSS */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+.global-transition {
+    @apply transition-all duration-300 ease-in-out;
+}
