@@ -9,6 +9,10 @@ module.exports = {
       },
       gradientColorStops: {
         'overlayBlack': 'rgba(0, 0, 0, 0.4)',
+      },
+      backgroundImage: {
+        'watched': "url(icons/ic_eye-watched.svg)",
+        'didntWatch': "url(icons/ic_eye-empty.svg)",
       }
     },
   },

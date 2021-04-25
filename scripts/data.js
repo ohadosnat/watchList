@@ -7,7 +7,7 @@ class Watchlist {
         this.db = db.collection('watchlist');
     }
     async getLocalJSON() {
-        const response = await fetch('watchlist.json');
+        const response = await fetch('json/watchlist.json');
         const data = await response.json();
         return data;
     }
@@ -15,7 +15,7 @@ class Watchlist {
         // loops through the items in the json file and format them for firestore
         for (let i = 0; i < items.length; i++) {
             const time = new Date(items[i].dateAdded)
-            const id = items[i].title.replace(/ /g, "-").toLowerCase() + "_" + items[i].releaseYear;
+            const id = `${items[i].title.replace(/[&:.!,' ]/g, "-").replace(/-{2,}/g, "-").toLowerCase()}_${items[i].releaseYear}`;
             const docTemplete = {
                 title: items[i].title,
                 releaseYear: items[i].releaseYear,
@@ -40,11 +40,26 @@ class Watchlist {
             .where('releaseYear', '==', 2008)
             .onSnapshot(snapshot => {
                 snapshot.docChanges().forEach(change => {
-                    callback(change.doc.data());
+                    if (change.type === "added") {
+                        const document = {
+                            info: change.doc.data(),
+                            id: change.doc.id
+                        }
+                        callback(document);
+                    }
                 })
             })
     }
+
+    updateStatus(film) {
+        this.db.doc(film.id).update({
+            watchStatus: film.watchStatus,
+        })
+            .then(() => console.log(`${film.title} Status has been updated to ${film.watchStatus}`))
+            .catch(err => console.log(err))
+    }
 }
+
 
 
 
