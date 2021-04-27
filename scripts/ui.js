@@ -69,6 +69,22 @@ class siteUI {
         if (container.children.addForm) { container.children.addForm.remove(); }
         editBtn.classList.add('hidden');
         saveEditBtn.classList.remove('hidden');
+
+        // Update Message
+        container.insertAdjacentHTML('beforeBegin', `
+        <div id="editMessage" class="global-transition fixed bottom-5 right-3 left-3 opacity-0 flex justify-center items-center">
+            <div class="global-transition z-10 absolute bottom-0 text-center px-4 py-3 bg-gray-50 rounded-md shadow-md">
+                    You're Currently in
+                    <span class="font-semibold text-[#484FFA]">Edit Mode</span> to leave, click the
+                    <span class="font-semibold text-[#49A600]">Green Icon</span>
+            </div>
+        </div>`);
+        // // myList.updateMessageAnimation(editMessage);
+        setTimeout(() => editMessage.classList.remove('opacity-0'), 100)
+        // setTimeout(() => editMessage.firstElementChild.classList.add('opacity-0'), 2000)
+        // setTimeout(() => editMessage.remove(), 2500)
+        // // container.editMessage.remove();
+
     }
 
     ExitEditMode(entry) {
@@ -83,8 +99,13 @@ class siteUI {
                 editOverlay.classList.add('bg-gradient-to-tr', 'from-overlayBlack', 'to-transparent', 'justify-start', 'items-end');
             }
         };
+
+        setTimeout(() => editMessage.classList.add('opacity-0'), 50)
+        setTimeout(() => editMessage.remove(), 350)
+
         container.children.addCard.classList.replace('hidden', 'flex');
         saveEditBtn.classList.add('hidden');
         editBtn.classList.remove('hidden');
+
     }
 }
