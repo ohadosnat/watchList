@@ -9,19 +9,33 @@
     <link rel="stylesheet" href="css/styles.css">
 </head>
 
-<body class="font-cabin">
-    <section class="pt-5 p-2 bg-gradient-to-tr from-[#71D1D7] to-[#5632BE] h-screen">
+<body class="font-cabin bg-gradient-to-tr from-[#71D1D7] to-[#5632BE] bg-fixed">
+    <section class="relative pt-5 p-2 md:p-6 2xl:p-10">
         <div class="flex justify-between items-center mb-3 text-white">
             <h1 class="text-xl">My Watchlist</h1>
-            <button class="flex items-center justify-center">Add Film
-                <svg xmlns="http://www.w3.org/2000/svg" class="ml-2 h-5 w-5" fill="none" viewBox="0 0 24 24"
+            <div class="">
+                <button class="p-2 bg-white text-black" id="edit">
+                    Edit
+                </button>
+                <button class="hidden p-2 bg-green-300 text-black" id="saveEdit">
+                    Done
+                </button>
+            </div>
+        </div>
+        <div id="filmWrapper" class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 text-white">
+            <button id="addCard"
+                class="bg-white bg-opacity-5 global-transition flex justify-center items-center flex-col h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52 border-white border-2 border-opacity-60 hover:border-opacity-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="mb-2 h-7 w-7" fill="none" viewBox="0 0 24 24"
                     stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
+                <h2 class="font-bold text-lg">Add Film</h2>
             </button>
         </div>
-        <div id="filmWrapper" class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 text-white">
+        <div id="updateMessage"
+            class="global-transition fixed bottom-5 right-3 left-3 opacity-0 flex justify-center items-center">
+
         </div>
     </section>
 

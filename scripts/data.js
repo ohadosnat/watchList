@@ -35,9 +35,10 @@ class Watchlist {
         }
         return items;
     }
+
     getCollection(callback) {
         this.db
-            .where('releaseYear', '==', 2008)
+            .where('releaseYear', '==', 2021)
             .onSnapshot(snapshot => {
                 snapshot.docChanges().forEach(change => {
                     if (change.type === "added") {
@@ -46,6 +47,9 @@ class Watchlist {
                             id: change.doc.id
                         }
                         callback(document);
+                    } else if (change.type === "removed") {
+                        const id = change.doc.id
+                        container.removeChild(container.children.namedItem(id))
                     }
                 })
             })
@@ -55,11 +59,72 @@ class Watchlist {
         this.db.doc(film.id).update({
             watchStatus: film.watchStatus,
         })
-            .then(() => console.log(`${film.title} Status has been updated to ${film.watchStatus}`))
+            .then(() => {
+                // Generates Update Message
+                if (film.watchStatus) {
+                    const html = `
+                    <div class="global-transition z-10 absolute bottom-0 text-center px-4 py-3 bg-gray-50 rounded-md shadow-md">
+                    <span class="font-semibold text-[#484FFA]">${film.title}</span> is now marked as 
+                    <span class="font-semibold text-[#484FFA]">watched</span></div>`;
+                    updateMessage.innerHTML += html;
+                    myList.updateMessageAnimation(updateMessage)
+                } else {
+                    const html = `
+                    <div class="global-transition z-10 absolute bottom-0 text-center px-4 py-3 bg-gray-50 rounded-md shadow-md">
+                    <span class="font-semibold text-[#484FFA]">${film.title}</span> is no longer marked as 
+                    <span class="font-semibold text-[#484FFA]">watched</span></div>`;
+                    updateMessage.innerHTML += html;
+                    myList.updateMessageAnimation(updateMessage)
+                }
+            })
             .catch(err => console.log(err))
     }
+
+    addEntry(entry) {
+        const time = new Date
+        const docTemplete = {
+            title: entry.title,
+            releaseYear: parseInt(entry.id.slice(-4)),
+            dateAdded: firebase.firestore.Timestamp.fromDate(time),
+            watchStatus: false,
+            type: entry.type
+        }
+
+        // based on the item's id, if exists in firestore db, do nothing, it doesn't exists then add to firestore db.
+        this.db.doc(entry.id).get()
+            .then((doc) => {
+                if (!doc.exists) {
+                    this.db.doc(entry.id).set(docTemplete)
+                        .then(() => {
+                            console.log(`${entry.title} has been added!`)
+                            const html = `
+                            <div class="global-transition z-10 absolute bottom-0 text-center px-4 py-3 bg-gray-50 rounded-md shadow-md">
+                            <span class="font-semibold text-[#484FFA]">${entry.title}</span> has been 
+                            <span class="font-semibold text-[#484FFA]">added</span></div>`;
+                            updateMessage.innerHTML += html;
+                            myList.updateMessageAnimation(updateMessage)
+                        })
+                        .catch(err => console.log(err));
+                }
+            })
+            .catch(err => console.log(err));
+
+    }
+    deleteEntry(entry) {
+        const title = myList.films.find(e => e.id === entry.id).title;
+        this.db.doc(entry.id).delete()
+            .then(() => {
+                myList.films = myList.films.filter(e => e.id !== entry.id);
+                console.log(myList.films)
+                console.log(`${title} has been deleted!`);
+                const html = `
+                <div class="global-transition z-10 absolute bottom-0 text-center px-4 py-3 bg-gray-50 rounded-md shadow-md">
+                <span class="font-semibold text-[#484FFA]">${title}</span> has been 
+                <span class="font-semibold text-[#484FFA]">deleted</span></div>`;
+                updateMessage.innerHTML += html;
+                myList.updateMessageAnimation(updateMessage);
+            })
+            .catch(err => console.log(err));
+    }
 }
-
-
-
 

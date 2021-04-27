@@ -1,5 +1,5 @@
 const container = document.querySelector('#filmWrapper');
-
+const updateMessage = document.querySelector('#updateMessage');
 
 const watchlist = 'watchlist.json'
 
@@ -8,7 +8,7 @@ const myWatchlist = new Watchlist(watchlist);
 const newData = new APIdata();
 
 
-
+// Pushing JSON data to Firestore
 // myWatchlist.getLocalJSON()
 //     .then((data) => myWatchlist.jsonToFirestore(data))
 //     .catch(err => console.log(err));
@@ -50,17 +50,72 @@ container.addEventListener('mouseleave', (e) => {
 
 
 container.addEventListener('click', e => {
-    const filmID = myList.films.find(film => film.id === e.target.parentElement.parentElement.id)
+    const filmID = myList.films.find(film => film.id === e.target.parentElement.parentElement.id);
     if (e.target.id === "watchToggle") {
         if (filmID.watchStatus) {
             e.target.classList.replace('bg-watched', 'bg-didntWatch')
             filmID.watchStatus = false
             myWatchlist.updateStatus(filmID)
-
         } else {
             e.target.classList.replace('bg-didntWatch', 'bg-watched')
             filmID.watchStatus = true
             myWatchlist.updateStatus(filmID)
+        };
+    };
+}, true);
+
+//  Add new Entry
+container.addEventListener('click', (e) => {
+    if (e.target.id === "addCard") {
+        if (container.children[1].id === "addForm") {
+            container.removeChild(container.children[1])
         }
+        e.target.insertAdjacentHTML('afterEnd', `
+        <form id="addForm" action="" autocomplete="off"
+        class="relative global-transition pb-4 px-9 flex justify-center items-center flex-col h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52 border-white border-2 text-white">
+        <input type="text" id="entryTitle" required
+        class="w-full text-sm bg-transparent border-white border-b text-center pb-1 placeholder-current"
+        placeholder="Enter a Film/TV Show Title">
+        <button type="submit" class="absolute bottom-0 bg-white shadow-sm text-black w-full py-1">Add Entry</button>
+        <div class="flex items-center justify-center mt-3">
+        <input type="radio" name="type" id="movie" value="movie" class="mr-1" required>
+        <label for="movie" class="mr-5">Film</label>
+        <input type="radio" name="type" id="tv" value="tv" class="mr-1">
+        <label for="tv">Tv Series</label>
+        </div>
+        </form>
+        `);
+        const addForm = document.querySelector('#addForm');
+        // Send Entry Form
+        addForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const entryValues = {
+                info: { type: e.target.type.value, title: e.target.entryTitle.value, }
+            }
+            newData.getFilm(entryValues)
+                .then(data => {
+                    container.removeChild(container.children[1]);
+                    myWatchlist.addEntry(data)
+                })
+                .catch(err => console.log(err))
+        })
     }
-}, true)
+    if (e.target.id === "deleteArea" || e.target.parentElement.id === "deleteArea") {
+        const entry = e.target.closest('#filmCover').parentElement;
+        myWatchlist.deleteEntry(entry)
+    }
+})
+
+// || e.target.parentElement.id === "deleteArea"
+// if (container.childElementCount === 0) {
+//     container.innerHTML = `
+//     <div class="fixed inset-0 flex flex-col justify-center text-center col-span-full row-span-full">
+//     <h1 class="font-medium text-2xl">Hey, Welcome to your personal Watchlist!</h1>
+//     <p class="text-lg">To get started, just add a new film or tv show</p>
+//     </div>
+//     `;
+// }
+const editBtn = document.querySelector('#edit')
+const saveEditBtn = document.querySelector('#saveEdit')
+editBtn.addEventListener('click', () => myList.EnterEditMode(myList.films), true);
+saveEditBtn.addEventListener('click', () => myList.ExitEditMode(myList.films), true);
