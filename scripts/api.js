@@ -17,19 +17,19 @@ class APIdata {
     }
     async getFilm(film) {
         let searchData;
-        if (film.info.releaseYear != undefined) {
-            // Searching Film to grab id
-            const filmSearch = await fetch(`https://api.themoviedb.org/3/search/${film.info.type}?api_key=${this.key}&query=${film.info.title}&year=${film.info.releaseYear}`)
+        if (film.releaseYear != undefined) {
+            // Searching Film with release year to grab id
+            const filmSearch = await fetch(`https://api.themoviedb.org/3/search/${film.type}?api_key=${this.key}&query=${film.title}&year=${film.releaseYear}`)
             searchData = await filmSearch.json();
         } else {
             // Searching Film to grab id
-            const filmSearch = await fetch(`https://api.themoviedb.org/3/search/${film.info.type}?api_key=${this.key}&query=${film.info.title}}`)
+            const filmSearch = await fetch(`https://api.themoviedb.org/3/search/${film.type}?api_key=${this.key}&query=${film.title}}`)
             searchData = await filmSearch.json();
         }
 
 
         // Using the Film id to get more Information
-        const filmInfo = await fetch(`https://api.themoviedb.org/3/${film.info.type}/${searchData.results[0].id}?api_key=${this.key}`);
+        const filmInfo = await fetch(`https://api.themoviedb.org/3/${film.type}/${searchData.results[0].id}?api_key=${this.key}`);
         const filmData = await filmInfo.json();
 
 
@@ -38,7 +38,7 @@ class APIdata {
         const backdrop_path = (filmData.backdrop_path === null) ? null : `${this.secure_base_url}${this.ImageSize}/${filmData.backdrop_path}`
         const poster_path = `${this.secure_base_url}${this.ImageSize}/${filmData.poster_path}`;
 
-        if (film.info.type === "tv") {
+        if (film.type === "tv") {
             if (!film.id) {
                 const releaseYear = filmData.first_air_date.slice(0, 4)
                 film.id = `${filmData.name.replace(/[&:.!,' ]/g, "-").replace(/-{2,}/g, "-").toLowerCase()}_${releaseYear}`;
@@ -49,8 +49,8 @@ class APIdata {
                 runtime: this.timeConvert(filmData.episode_run_time[0]),
                 backdrop_path,
                 poster_path,
-                watchStatus: film.info.watchStatus,
-                type: film.info.type,
+                watchStatus: film.watchStatus,
+                type: film.type,
             }
             return result;
         } else {
@@ -64,8 +64,8 @@ class APIdata {
                 runtime: this.timeConvert(filmData.runtime),
                 backdrop_path,
                 poster_path,
-                watchStatus: film.info.watchStatus,
-                type: film.info.type,
+                watchStatus: film.watchStatus,
+                type: film.type,
             }
             return result;
         }

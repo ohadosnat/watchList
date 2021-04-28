@@ -72,24 +72,18 @@ class siteUI {
 
         // Update Message
         container.insertAdjacentHTML('beforeBegin', `
-        <div id="editMessage" class="global-transition fixed bottom-5 right-3 left-3 opacity-0 flex justify-center items-center">
+        <div id="editMessage" class="global-transition fixed bottom-5 right-3 left-3 opacity-0 flex justify-center items-center z-50">
             <div class="global-transition z-10 absolute bottom-0 text-center px-4 py-3 bg-gray-50 rounded-md shadow-md">
                     You're Currently in
                     <span class="font-semibold text-[#484FFA]">Edit Mode</span> to leave, click the
                     <span class="font-semibold text-[#49A600]">Green Icon</span>
             </div>
         </div>`);
-        // // myList.updateMessageAnimation(editMessage);
         setTimeout(() => editMessage.classList.remove('opacity-0'), 100)
-        // setTimeout(() => editMessage.firstElementChild.classList.add('opacity-0'), 2000)
-        // setTimeout(() => editMessage.remove(), 2500)
-        // // container.editMessage.remove();
-
     }
 
     ExitEditMode(entry) {
         // adds edit mode overlay to all cards
-        console.log(entry)
         for (let i = 0; i < myList.films.length; i++) {
             if (container.children.namedItem(entry[i].id) != null) {
                 const mainDiv = container.children.namedItem(entry[i].id);

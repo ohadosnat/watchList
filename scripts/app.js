@@ -1,11 +1,22 @@
 const container = document.querySelector('#filmWrapper');
 const updateMessage = document.querySelector('#updateMessage');
+const section = container.parentElement;
+
 
 const watchlist = 'watchlist.json'
 
 const myList = new siteUI(container);
 const myWatchlist = new Watchlist(watchlist);
 const newData = new APIdata();
+
+// Screen Queries
+const screenQueries = {
+    sm: 640,
+    md: 768,
+    lg: 1024,
+    xl: 1280,
+    xxl: 1536
+}
 
 
 // Pushing JSON data to Firestore
@@ -14,11 +25,18 @@ const newData = new APIdata();
 //     .catch(err => console.log(err));
 
 // Renders Data - While working on the design, turn this off
-myWatchlist.getCollection(data => {
+// myWatchlist.getCollection(data => {
+//     newData.getFilm(data)
+//         .then((result) => myList.render(result))
+//         .catch(err => console.log(err))
+// })
+myWatchlist.getDocuments(data => {
     newData.getFilm(data)
         .then((result) => myList.render(result))
         .catch(err => console.log(err))
 });
+
+
 
 // EventListeners (Hover/Click)
 container.addEventListener('mouseenter', (e) => {
@@ -66,13 +84,13 @@ container.addEventListener('click', e => {
 
 //  Add new Entry
 container.addEventListener('click', (e) => {
-    if (e.target.id === "addCard") {
+    if (e.target.id === "addCard" || e.target.parentElement.id === "addCard") {
         if (container.children[1].id === "addForm") {
             container.removeChild(container.children[1])
         }
-        e.target.insertAdjacentHTML('afterEnd', `
+        addCard.insertAdjacentHTML('afterEnd', `
         <form id="addForm" action="" autocomplete="off"
-        class="relative global-transition pb-4 px-9 flex justify-center items-center flex-col h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52 border-white border-2 text-white">
+        class="relative global-transition pb-4 px-2 flex justify-center items-center flex-col h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52 border-white border-2 text-white">
         <input type="text" id="entryTitle" required
         class="w-full text-sm bg-transparent border-white border-b text-center pb-1 placeholder-current"
         placeholder="Enter a Film/TV Show Title">
@@ -90,7 +108,8 @@ container.addEventListener('click', (e) => {
         addForm.addEventListener('submit', e => {
             e.preventDefault();
             const entryValues = {
-                info: { type: e.target.type.value, title: e.target.entryTitle.value, }
+                type: e.target.type.value,
+                title: e.target.entryTitle.value
             }
             newData.getFilm(entryValues)
                 .then(data => {
@@ -103,6 +122,7 @@ container.addEventListener('click', (e) => {
     if (e.target.id === "deleteArea" || e.target.parentElement.id === "deleteArea") {
         const entry = e.target.closest('#filmCover').parentElement;
         myWatchlist.deleteEntry(entry)
+        entry.remove()
     }
 })
 
@@ -119,3 +139,17 @@ const editBtn = document.querySelector('#edit')
 const saveEditBtn = document.querySelector('#saveEdit')
 editBtn.addEventListener('click', () => myList.EnterEditMode(myList.films), true);
 saveEditBtn.addEventListener('click', () => myList.ExitEditMode(myList.films), true);
+
+
+
+section.addEventListener('scroll', () => {
+    let triggerHeigh = section.scrollTop + section.offsetHeight;
+    if (triggerHeigh >= section.scrollHeight) {
+        console.log('hello')
+        myWatchlist.getNextDocuments(data => {
+            newData.getFilm(data)
+                .then((result) => myList.render(result))
+                .catch(err => console.log(err))
+        });
+    }
+});
