@@ -38,12 +38,10 @@ class Watchlist {
         }
         return items;
     }
-    // try remove the onSnapshot and add a regular get() and each time, get 10 (inital 15, and every scroll 5 more)
-    getCollection(callback) {
+    // For Real-Time Updates, No longer in use but keep it for reference (for now)
+    getOnSnapshot(callback) {
         this.db
-            // .where('releaseYear', '==', 2021)
             .orderBy('dateAdded')
-            .startAfter(this.latestDoc)
             .limit(19)
             .onSnapshot(snapshot => {
                 snapshot.docChanges().forEach(change => {
@@ -61,6 +59,8 @@ class Watchlist {
                 this.latestDoc = snapshot.docs.length - 1;
             })
     }
+
+    // Gets the inital documents
     async getDocuments(callback) {
         // Sets limit based on screen size
         if (section.offsetWidth > 1024) {
@@ -78,57 +78,51 @@ class Watchlist {
             const { id, info: { dateAdded, releaseYear, title, type, watchStatus } } = documentData
             const document = { id, dateAdded, releaseYear, title, type, watchStatus }
             callback(document);
-        })
+        });
+        // To keep track of the last document
         this.latestDoc = data.docs[data.docs.length - 1];
     }
-    async getNextDocuments(callback) {
 
+    // Gets the next set of documents (5)
+    async getNextDocuments(callback) {
         const ref = this.db
             .orderBy("dateAdded", 'desc')
             .startAfter(this.latestDoc || 0)
             .limit(4)
         const data = await ref.get()
-
         data.docs.forEach(doc => {
             const documentData = { info: doc.data(), id: doc.id }
             const { id, info: { dateAdded, releaseYear, title, type, watchStatus } } = documentData
             const document = { id, dateAdded, releaseYear, title, type, watchStatus }
             callback(document);
-        })
+        });
+        // To keep track of the last document
         this.latestDoc = data.docs[data.docs.length - 1];
+
         // remove event when reaching the end
         if (data.empty) {
-            section.removeEventListener('scroll', () => {
-                let triggerHeigh = section.scrollTop + section.offsetHeight;
-                if (triggerHeigh >= section.scrollHeight) {
-                    console.log('hello')
-                    myWatchlist.getNextDocuments(data => {
-                        newData.getFilm(data)
-                            .then((result) => myList.render(result))
-                            .catch(err => console.log(err))
-                    });
-                }
-            });
-        }
+            section.removeEventListener('scroll', scrollHandle);
+        };
     }
 
-    updateStatus(film) {
-        this.db.doc(film.id).update({
-            watchStatus: film.watchStatus,
+    // Handles the update status event - Updates the collection and creates a update message for the user
+    updateStatus(entry) {
+        this.db.doc(entry.id).update({
+            watchStatus: entry.watchStatus,
         })
             .then(() => {
                 // Generates Update Message
-                if (film.watchStatus) {
+                if (entry.watchStatus) {
                     const html = `
                     <div class="global-transition z-10 absolute bottom-0 text-center px-4 py-3 bg-gray-50 rounded-md shadow-md">
-                    <span class="font-semibold text-[#484FFA]">${film.title}</span> is now marked as 
+                    <span class="font-semibold text-[#484FFA]">${entry.title}</span> is now marked as 
                     <span class="font-semibold text-[#484FFA]">watched</span></div>`;
                     updateMessage.innerHTML += html;
                     myList.updateMessageAnimation(updateMessage)
                 } else {
                     const html = `
                     <div class="global-transition z-10 absolute bottom-0 text-center px-4 py-3 bg-gray-50 rounded-md shadow-md">
-                    <span class="font-semibold text-[#484FFA]">${film.title}</span> is no longer marked as 
+                    <span class="font-semibold text-[#484FFA]">${entry.title}</span> is no longer marked as 
                     <span class="font-semibold text-[#484FFA]">watched</span></div>`;
                     updateMessage.innerHTML += html;
                     myList.updateMessageAnimation(updateMessage)
@@ -154,7 +148,7 @@ class Watchlist {
                         .then(() => {
 
                             // Generate a New Card
-                            newData.getFilm(docTemplete)
+                            newData.getEntryData(docTemplete)
                                 .then((result) => myList.render(result))
                                 .catch(err => console.log(err))
 
@@ -175,13 +169,11 @@ class Watchlist {
 
     }
     deleteEntry(entry) {
-        // need to remove/disable the scroll event, to prevent more loading
-
-        const title = myList.films.find(e => e.id === entry.id).title;
+        const title = myList.entries.find(e => e.id === entry.id).title;
         this.db.doc(entry.id).delete()
             .then(() => {
-                // Updates the overall films to make sure the edit mode will work
-                myList.films = myList.films.filter(e => e.id !== entry.id);
+                // Updates the overall entries to make sure the edit mode will work
+                myList.entries = myList.entries.filter(e => e.id !== entry.id);
 
                 // Delete Message
                 console.log(`${title} has been deleted!`);

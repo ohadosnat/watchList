@@ -1,12 +1,12 @@
 class siteUI {
     constructor(list) {
         this.list = list;
-        this.films = [];
+        this.entries = [];
     }
-    render(film) {
-        let status = (film.watchStatus ? "bg-watched" : "bg-didntWatch");
+    render(entry) {
+        let status = (entry.watchStatus ? "bg-watched" : "bg-didntWatch");
         let btn;
-        if (film.watchStatus) {
+        if (entry.watchStatus) {
             btn = `
             <button id="watchToggle"
             class="${status} bg-no-repeat bg-center global-transition top-0 left-0 absolute w-10 h-10 bg-white rounded-br-md justify-center items-center flex">
@@ -20,10 +20,11 @@ class siteUI {
             `;
         }
 
-        const img = (film.backdrop_path === null) ? film.poster_path : film.backdrop_path;
+        const img = (entry.backdrop_path === null) ? entry.poster_path : entry.backdrop_path;
+
         const html = `
-        <div id="${film.id}" class="relative h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52">
-            <div id="filmCover" class="global-transition relative w-full h-full bg-cover bg-no-repeat bg-center scale-105"
+        <div id="${entry.id}" class="relative h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52">
+            <div id="entryCover" class="global-transition relative w-full h-full bg-cover bg-no-repeat bg-center scale-105"
                 style="background-image: url(${img});">
                 <div 
                     class="absolute inset-0 bg-gradient-to-tr from-overlayBlack to-transparent bg-opacity-40 flex justify-start items-end">
@@ -31,15 +32,15 @@ class siteUI {
             </div>
             <div id="overlay" class="absolute inset-0 ">
             <div class="h-full pb-4 px-4 flex justify-end flex-col">
-                <h2 class="font-bold text-sm">${film.title}</h2>
-                <p class="font-light text-xs">${film.runtime}</p>
+                <h2 class="font-bold text-sm">${entry.title}</h2>
+                <p class="font-light text-xs">${entry.runtime}</p>
             </div>
             ${btn}
             </div>
         </div>
         `;
 
-        this.films.push(film);
+        this.entries.push(entry);
         this.list.innerHTML += html;
     }
     // Update Message Animation Effects
@@ -49,10 +50,13 @@ class siteUI {
         setTimeout(() => element.removeChild(element.firstElementChild), 2500)
     }
     EnterEditMode(entry) {
+        //  removes the scroll event (to prevent more loading while scrolling during edit mode)
+        section.removeEventListener('scroll', scrollHandle);
+
         // adds edit mode overlay to all cards
-        for (let i = 0; i < myList.films.length; i++) {
+        for (let i = 0; i < this.entries.length; i++) {
             const mainDiv = container.children.namedItem(entry[i].id);
-            const editOverlay = mainDiv.children.filmCover.firstElementChild;
+            const editOverlay = mainDiv.children.entryCover.firstElementChild;
             const html = `
             <div id="deleteArea" class="cursor-pointer p-3 flex flex-col justify-center items-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -83,11 +87,13 @@ class siteUI {
     }
 
     ExitEditMode(entry) {
-        // adds edit mode overlay to all cards
-        for (let i = 0; i < myList.films.length; i++) {
+        // adds the scroll event again (to allow the user to scroll and load more entries)
+        section.addEventListener('scroll', scrollHandle);
+        // removes edit mode overlay from all cards
+        for (let i = 0; i < this.entries.length; i++) {
             if (container.children.namedItem(entry[i].id) != null) {
                 const mainDiv = container.children.namedItem(entry[i].id);
-                const editOverlay = mainDiv.children.filmCover.firstElementChild;
+                const editOverlay = mainDiv.children.entryCover.firstElementChild;
                 editOverlay.innerHTML = "";
                 editOverlay.classList.remove('bg-red-900', 'global-transition', 'z-20', 'flex-col', 'justify-center', 'items-center', 'transform', 'hover:bg-opacity-90', 'hover:scale-105')
                 editOverlay.classList.add('bg-gradient-to-tr', 'from-overlayBlack', 'to-transparent', 'justify-start', 'items-end');

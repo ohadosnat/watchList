@@ -1,4 +1,4 @@
-/*
+/* Plan:
 getCollection()            searchFilm()                                                         render()
 get firestore document -> search the document title on the api -> get information & poster -> display information on the site
 */
@@ -15,61 +15,64 @@ class APIdata {
         const data = await response.json();
         return data;
     }
-    async getFilm(film) {
+    async getEntryData(entry) {
         let searchData;
-        if (film.releaseYear != undefined) {
-            // Searching Film with release year to grab id
-            const filmSearch = await fetch(`https://api.themoviedb.org/3/search/${film.type}?api_key=${this.key}&query=${film.title}&year=${film.releaseYear}`)
-            searchData = await filmSearch.json();
+        if (entry.releaseYear != undefined) {
+            // Searching an Entry with release year to grab id
+            const entrySearch = await fetch(`https://api.themoviedb.org/3/search/${entry.type}?api_key=${this.key}&query=${entry.title}&year=${entry.releaseYear}`)
+            searchData = await entrySearch.json();
         } else {
-            // Searching Film to grab id
-            const filmSearch = await fetch(`https://api.themoviedb.org/3/search/${film.type}?api_key=${this.key}&query=${film.title}}`)
-            searchData = await filmSearch.json();
+            // Searching an Entry to grab id
+            const entrySearch = await fetch(`https://api.themoviedb.org/3/search/${entry.type}?api_key=${this.key}&query=${entry.title}}`)
+            searchData = await entrySearch.json();
         }
 
 
-        // Using the Film id to get more Information
-        const filmInfo = await fetch(`https://api.themoviedb.org/3/${film.type}/${searchData.results[0].id}?api_key=${this.key}`);
-        const filmData = await filmInfo.json();
+        // Using the Entry's id to get more Information
+        const entryInfo = await fetch(`https://api.themoviedb.org/3/${entry.type}/${searchData.results[0].id}?api_key=${this.key}`);
+        const entryData = await entryInfo.json();
 
 
 
+        // Structure the backdrop/poster path according to the API
+        const backdrop_path = (entryData.backdrop_path === null) ? null : `${this.secure_base_url}${this.ImageSize}/${entryData.backdrop_path}`
+        const poster_path = `${this.secure_base_url}${this.ImageSize}/${entryData.poster_path}`;
 
-        const backdrop_path = (filmData.backdrop_path === null) ? null : `${this.secure_base_url}${this.ImageSize}/${filmData.backdrop_path}`
-        const poster_path = `${this.secure_base_url}${this.ImageSize}/${filmData.poster_path}`;
-
-        if (film.type === "tv") {
-            if (!film.id) {
-                const releaseYear = filmData.first_air_date.slice(0, 4)
-                film.id = `${filmData.name.replace(/[&:.!,' ]/g, "-").replace(/-{2,}/g, "-").toLowerCase()}_${releaseYear}`;
-            }
+        // If it's a TV Show
+        if (entry.type === "tv") {
+            if (!entry.id) {
+                const releaseYear = entryData.first_air_date.slice(0, 4);
+                entry.id = `${entryData.name.replace(/[&:.!,' ]/g, "-").replace(/-{2,}/g, "-").toLowerCase()}_${releaseYear}`;
+            };
             const result = {
-                id: film.id,
-                title: filmData.name,
-                runtime: this.timeConvert(filmData.episode_run_time[0]),
+                id: entry.id,
+                title: entryData.name,
+                runtime: this.timeConvert(entryData.episode_run_time[0]),
                 backdrop_path,
                 poster_path,
-                watchStatus: film.watchStatus,
-                type: film.type,
+                watchStatus: entry.watchStatus,
+                type: entry.type,
             }
             return result;
+            // If it's a Movie
         } else {
-            if (!film.id) {
-                const releaseYear = filmData.release_date.slice(0, 4)
-                film.id = `${filmData.title.replace(/[&:.!,' ]/g, "-").replace(/-{2,}/g, "-").toLowerCase()}_${releaseYear}`;
+            if (!entry.id) {
+                const releaseYear = entryData.release_date.slice(0, 4)
+                entry.id = `${entryData.title.replace(/[&:.!,' ]/g, "-").replace(/-{2,}/g, "-").toLowerCase()}_${releaseYear}`;
             }
             const result = {
-                id: film.id,
-                title: filmData.title,
-                runtime: this.timeConvert(filmData.runtime),
+                id: entry.id,
+                title: entryData.title,
+                runtime: this.timeConvert(entryData.runtime),
                 backdrop_path,
                 poster_path,
-                watchStatus: film.watchStatus,
-                type: film.type,
+                watchStatus: entry.watchStatus,
+                type: entry.type,
             }
             return result;
         }
     }
+    // Converts the runtime into a string with values
     timeConvert(runtime) {
         const hours = Math.floor(runtime / 60);
         const minutes = runtime % 60;

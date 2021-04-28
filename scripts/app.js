@@ -1,22 +1,13 @@
-const container = document.querySelector('#filmWrapper');
+const container = document.querySelector('#EntriesWrapper');
 const updateMessage = document.querySelector('#updateMessage');
 const section = container.parentElement;
 
 
-const watchlist = 'watchlist.json'
+const watchlistRef = 'watchlist.json'
 
 const myList = new siteUI(container);
-const myWatchlist = new Watchlist(watchlist);
+const myWatchlist = new Watchlist(watchlistRef);
 const newData = new APIdata();
-
-// Screen Queries
-const screenQueries = {
-    sm: 640,
-    md: 768,
-    lg: 1024,
-    xl: 1280,
-    xxl: 1536
-}
 
 
 // Pushing JSON data to Firestore
@@ -25,13 +16,8 @@ const screenQueries = {
 //     .catch(err => console.log(err));
 
 // Renders Data - While working on the design, turn this off
-// myWatchlist.getCollection(data => {
-//     newData.getFilm(data)
-//         .then((result) => myList.render(result))
-//         .catch(err => console.log(err))
-// })
 myWatchlist.getDocuments(data => {
-    newData.getFilm(data)
+    newData.getEntryData(data)
         .then((result) => myList.render(result))
         .catch(err => console.log(err))
 });
@@ -39,6 +25,8 @@ myWatchlist.getDocuments(data => {
 
 
 // EventListeners (Hover/Click)
+
+// Entry Hover Event (Mouse Enter/Leave)
 container.addEventListener('mouseenter', (e) => {
     const boxImg = e.target.previousElementSibling
     const watchToggle = e.target.lastElementChild
@@ -53,10 +41,10 @@ container.addEventListener('mouseenter', (e) => {
 container.addEventListener('mouseleave', (e) => {
     const boxImg = e.target.previousElementSibling
     const watchToggle = e.target.lastElementChild
-    const filmID = myList.films.find(film => film.id === e.target.parentElement.id)
+    const entryID = myList.entries.find(entry => entry.id === e.target.parentElement.id)
     if (e.target.id === "overlay") {
         boxImg.classList.remove('transform');
-        if (filmID.watchStatus === false) {
+        if (entryID.watchStatus === false) {
             watchToggle.classList.add('opacity-0');
             setTimeout(() => {
                 watchToggle.classList.remove('flex');
@@ -66,28 +54,28 @@ container.addEventListener('mouseleave', (e) => {
     }
 }, true);
 
-
+// Watch Toggle Event
 container.addEventListener('click', e => {
-    const filmID = myList.films.find(film => film.id === e.target.parentElement.parentElement.id);
+    const entryID = myList.entries.find(entry => entry.id === e.target.parentElement.parentElement.id);
     if (e.target.id === "watchToggle") {
-        if (filmID.watchStatus) {
+        if (entryID.watchStatus) {
             e.target.classList.replace('bg-watched', 'bg-didntWatch')
-            filmID.watchStatus = false
-            myWatchlist.updateStatus(filmID)
+            entryID.watchStatus = false
+            myWatchlist.updateStatus(entryID)
         } else {
             e.target.classList.replace('bg-didntWatch', 'bg-watched')
-            filmID.watchStatus = true
-            myWatchlist.updateStatus(filmID)
+            entryID.watchStatus = true
+            myWatchlist.updateStatus(entryID)
         };
     };
 }, true);
 
-//  Add new Entry
+// Container Events (Add/Delete)
 container.addEventListener('click', (e) => {
+    // Add new Entry Event
     if (e.target.id === "addCard" || e.target.parentElement.id === "addCard") {
-        if (container.children[1].id === "addForm") {
-            container.removeChild(container.children[1])
-        }
+        if (container.children[1].id === "addForm") { container.removeChild(container.children[1]) };
+
         addCard.insertAdjacentHTML('afterEnd', `
         <form id="addForm" action="" autocomplete="off"
         class="relative global-transition pb-4 px-2 flex justify-center items-center flex-col h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52 border-white border-2 text-white">
@@ -104,14 +92,14 @@ container.addEventListener('click', (e) => {
         </form>
         `);
         const addForm = document.querySelector('#addForm');
-        // Send Entry Form
+        // Send Entry Form Event
         addForm.addEventListener('submit', e => {
             e.preventDefault();
             const entryValues = {
                 type: e.target.type.value,
                 title: e.target.entryTitle.value
             }
-            newData.getFilm(entryValues)
+            newData.getEntryData(entryValues)
                 .then(data => {
                     container.removeChild(container.children[1]);
                     myWatchlist.addEntry(data)
@@ -119,37 +107,29 @@ container.addEventListener('click', (e) => {
                 .catch(err => console.log(err))
         })
     }
+    // Delete Entry Event
     if (e.target.id === "deleteArea" || e.target.parentElement.id === "deleteArea") {
-        const entry = e.target.closest('#filmCover').parentElement;
+        const entry = e.target.closest('#entryCover').parentElement;
         myWatchlist.deleteEntry(entry)
         entry.remove()
     }
-})
+});
 
-// || e.target.parentElement.id === "deleteArea"
-// if (container.childElementCount === 0) {
-//     container.innerHTML = `
-//     <div class="fixed inset-0 flex flex-col justify-center text-center col-span-full row-span-full">
-//     <h1 class="font-medium text-2xl">Hey, Welcome to your personal Watchlist!</h1>
-//     <p class="text-lg">To get started, just add a new film or tv show</p>
-//     </div>
-//     `;
-// }
+// Edit Mode Events
 const editBtn = document.querySelector('#edit')
 const saveEditBtn = document.querySelector('#saveEdit')
-editBtn.addEventListener('click', () => myList.EnterEditMode(myList.films), true);
-saveEditBtn.addEventListener('click', () => myList.ExitEditMode(myList.films), true);
+editBtn.addEventListener('click', () => myList.EnterEditMode(myList.entries), true);
+saveEditBtn.addEventListener('click', () => myList.ExitEditMode(myList.entries), true);
 
-
-
-section.addEventListener('scroll', () => {
+// Scroll Event
+const scrollHandle = () => {
     let triggerHeigh = section.scrollTop + section.offsetHeight;
     if (triggerHeigh >= section.scrollHeight) {
-        console.log('hello')
         myWatchlist.getNextDocuments(data => {
-            newData.getFilm(data)
+            newData.getEntryData(data)
                 .then((result) => myList.render(result))
                 .catch(err => console.log(err))
         });
     }
-});
+};
+section.addEventListener('scroll', scrollHandle);
