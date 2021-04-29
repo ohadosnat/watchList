@@ -130,7 +130,7 @@ class Watchlist {
             })
             .catch(err => console.log(err))
     }
-
+    // Handles adding new entries
     addEntry(entry) {
         const time = new Date
         const docTemplete = {

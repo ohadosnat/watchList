@@ -127,7 +127,7 @@ const scrollHandle = () => {
     if (triggerHeigh >= section.scrollHeight) {
         myWatchlist.getNextDocuments(data => {
             newData.getEntryData(data)
-                .then((result) => myList.render(result))
+                .then((result) => myList.nextRender(result))
                 .catch(err => console.log(err))
         });
     }

@@ -2,7 +2,6 @@
 getCollection()            searchFilm()                                                         render()
 get firestore document -> search the document title on the api -> get information & poster -> display information on the site
 */
-
 class APIdata {
     constructor() {
         this.key = '838716e49cbf582392d75874724aeb1f';
@@ -23,13 +22,18 @@ class APIdata {
             searchData = await entrySearch.json();
         } else {
             // Searching an Entry to grab id
-            const entrySearch = await fetch(`https://api.themoviedb.org/3/search/${entry.type}?api_key=${this.key}&query=${entry.title}}`)
+            const entrySearch = await fetch(`https://api.themoviedb.org/3/search/${entry.type}?api_key=${this.key}&query=${entry.title}`)
             searchData = await entrySearch.json();
         }
+        // finds the result with the highest pupularity and returns the right result
+        const entryPopularity = [];
+        searchData.results.forEach(e => entryPopularity.push(e.popularity));
+        let maxPopularity = Math.max(...entryPopularity);
+        const result = searchData.results.find(e => e.popularity === maxPopularity)
 
 
         // Using the Entry's id to get more Information
-        const entryInfo = await fetch(`https://api.themoviedb.org/3/${entry.type}/${searchData.results[0].id}?api_key=${this.key}`);
+        const entryInfo = await fetch(`https://api.themoviedb.org/3/${entry.type}/${result.id}?api_key=${this.key}`);
         const entryData = await entryInfo.json();
 
 

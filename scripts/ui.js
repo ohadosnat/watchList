@@ -3,6 +3,7 @@ class siteUI {
         this.list = list;
         this.entries = [];
     }
+    // used for the inital set of entries when the page loads + when adding a new entry (to make sure it will be at the top)
     render(entry) {
         let status = (entry.watchStatus ? "bg-watched" : "bg-didntWatch");
         let btn;
@@ -19,9 +20,47 @@ class siteUI {
             </button>
             `;
         }
-
         const img = (entry.backdrop_path === null) ? entry.poster_path : entry.backdrop_path;
+        // will add after thet "addCard" element
+        addCard.insertAdjacentHTML('afterend', `
+        <div id="${entry.id}" class="relative h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52">
+            <div id="entryCover" class="global-transition relative w-full h-full bg-cover bg-no-repeat bg-center scale-105"
+                style="background-image: url(${img});">
+                <div 
+                    class="absolute inset-0 bg-gradient-to-tr from-overlayBlack to-transparent bg-opacity-40 flex justify-start items-end">
+                </div>
+            </div>
+            <div id="overlay" class="absolute inset-0 ">
+            <div class="h-full pb-4 px-4 flex justify-end flex-col">
+                <h2 class="font-bold text-sm">${entry.title}</h2>
+                <p class="font-light text-xs">${entry.runtime}</p>
+            </div>
+            ${btn}
+            </div>
+        </div>
+        `);
 
+        // To keep track of active entries (used in edit mode)
+        this.entries.push(entry);
+    }
+    // to make sure that the next set of entries loads, it will be at the bottom and not at the top
+    nextRender(entry) {
+        let status = (entry.watchStatus ? "bg-watched" : "bg-didntWatch");
+        let btn;
+        if (entry.watchStatus) {
+            btn = `
+            <button id="watchToggle"
+            class="${status} bg-no-repeat bg-center global-transition top-0 left-0 absolute w-10 h-10 bg-white rounded-br-md justify-center items-center flex">
+            </button>
+        `;
+        } else {
+            btn = `
+            <button id="watchToggle"
+            class="${status} bg-no-repeat bg-center global-transition top-0 left-0 absolute w-10 h-10 bg-white rounded-br-md justify-center items-center hidden opacity-0">
+            </button>
+            `;
+        }
+        const img = (entry.backdrop_path === null) ? entry.poster_path : entry.backdrop_path;
         const html = `
         <div id="${entry.id}" class="relative h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52">
             <div id="entryCover" class="global-transition relative w-full h-full bg-cover bg-no-repeat bg-center scale-105"
@@ -39,9 +78,10 @@ class siteUI {
             </div>
         </div>
         `;
-
-        this.entries.push(entry);
+        // adds at the bottom of the list
         this.list.innerHTML += html;
+        // To keep track of active entries (used in edit mode)
+        this.entries.push(entry);
     }
     // Update Message Animation Effects
     updateMessageAnimation(element) {
