@@ -3,7 +3,7 @@ FIX ANY TYPOS, GRAMMAR AND SUCH LATER
 ### Using **Firebase(Firestore), Vanilla JS, CSS & HTML**
 As always, as I'm learning new things, I try working on my own ideas to get better understanding of the concepts I've learned and discover new ones. <br>
 This time, it was building a project with Firestore's Firebase. <br> <br>
-You can view the project [here](https://link) <br>
+You can view the project [here](https://ohadosnat.github.io/watchlist/index.html) <br>
 
 ## The Idea
 I'm a long time user of the site "Letterboxd" which is a social network for films/tv shows lovers (like IMDB but more elegant I would say). <br>
