@@ -80,7 +80,7 @@ class APIdata {
     timeConvert(runtime) {
         const hours = Math.floor(runtime / 60);
         const minutes = runtime % 60;
-        if (hours === minutes === 0) {
+        if (hours === 0 && minutes === 0) {
             return `TBA`
         } else if (hours === 0) {
             return `${minutes}m`;
