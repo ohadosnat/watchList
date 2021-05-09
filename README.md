@@ -17,7 +17,7 @@ After getting my JSON data into Firestore, I started to work on grabbing the doc
 I managed to get the API working, and after  passing only a few films to it from the Firestore database I saw that it worked, and moved to the design part.
 
 ## The Design
-As usual, I opened up Figma, and started to design my project. My first idea was to use one of my designs from my [Tailwind Collection Project](https://link/) which is a "movie app" type design. I started to think how the watchlist of my "movie app" design would look, and from there it was pretty fast. <br>
+As usual, I opened up Figma, and started to design my project. My first idea was to use one of my designs from my [Tailwind Collection Project](https://github.com/ohadosnat/tailwind-collection) which is a "[movie app](https://ohadosnat.github.io/tailwind-collection/pages/movie.html)" type design. I started to think how the watchlist of my "movie app" design would look, and from there it was pretty fast. <br>
 I thought about more features such as adding/removing entries and displaying the entry's title & runtime.<br>
 Of course, as I continued to work on this project, new ideas came up and I always ended up changing things. <br>
 Back to the development process, I started to work on the design using Tailwind CSS (again).
