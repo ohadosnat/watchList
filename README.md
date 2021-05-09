@@ -2,7 +2,7 @@
 ### Using **Firebase(Firestore), Vanilla JS, CSS & HTML**
 As always, as I'm learning new things, I try working on my ideas to get a better understanding of the concepts I've learned and discover new ones.
 This time, it was building a project with Firestore's Firebase. <br> <br>
-You can view the project [here](https://ohadosnat.github.io/watchlist/index.html) <br>
+You can view the project [here](https://ohadosnat.github.io/watchList/index.html) <br>
 
 ## The Idea
 I'm a long time user of the site "Letterboxd" which is a social network for film/tv show lovers (like IMDB but more elegant I would say). <br>
