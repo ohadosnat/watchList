@@ -2,76 +2,45 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Watchlist</title>
-    <link rel="stylesheet" href="css/styles.css">
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Watchlist</title>
 </head>
 
 <body class="font-cabin bg-gradient-to-tr from-[#71D1D7] to-[#5632BE] bg-fixed">
-    <section class="relative py-5 p-2 md:p-6 2xl:p-10 h-screen overflow-y-scroll box-border ">
-        <div class="flex justify-between items-center mb-3 text-white">
-            <h1 class="text-xl">My Watchlist</h1>
-            <div class="">
-                <button class="global-transition p-2 text-white hover:text-green-400" id="edit">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                        stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-                            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                </button>
-                <button class="hidden p-2 text-green-400" id="saveEdit">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-                            clip-rule="evenodd" />
-                    </svg>
-                </button>
-            </div>
-        </div>
-        <div id="EntriesWrapper"
-            class="grid grid-cols-2 gap-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5 text-white">
-            <button id="addCard"
-                class="bg-white bg-opacity-5 global-transition flex justify-center items-center flex-col h-40 rounded-md overflow-hidden shadow-sm 2xl:h-52 border-white border-2 border-opacity-60 hover:border-opacity-100">
-                <svg xmlns="http://www.w3.org/2000/svg" class="mb-2 h-7 w-7" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-                <h2 class="font-bold text-lg">Add Film</h2>
-            </button>
-        </div>
-        <div id="updateMessage"
-            class="global-transition fixed bottom-5 right-3 left-3 opacity-0 flex justify-center items-center z-50">
+  <section class="relative py-5 p-2 md:p-6 2xl:p-10 h-screen overflow-y-scroll box-border">
+    <div id="topContent" class="flex justify-between items-center mb-3 text-white">
+      <h1 class="text-xl">My Watchlist</h1>
+      <button class="global-transition p-2 text-white hover:text-green-400" id="edit">
+        <svg xmlns="http://www.w3.org/2000/svg" class="pointer-events-none h-6 w-6" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+            d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+        </svg>
+      </button>
 
-        </div>
-    </section>
+    </div>
+    <div id="EntriesWrapper"
+      class=" grid grid-cols-2  gap-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5  text-white ">
 
-    <!-- The core Firebase JS SDK is always required and must be listed first -->
-    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-firestore.js"></script>
-    <script>
-        // Your web app's Firebase configuration
-        // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        var firebaseConfig = {
-            apiKey: "AIzaSyDX_LnE3GSqGg_u6TDcCzN30e7gI9a10hY",
-            authDomain: "ohads-project.firebaseapp.com",
-            projectId: "ohads-project",
-            storageBucket: "ohads-project.appspot.com",
-            messagingSenderId: "576782438123",
-            appId: "1:576782438123:web:50bd273576085a9574b8ae",
-            measurementId: "G-ZJ6P6KXLK3"
-        };
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-    </script>
+      <button id="addCard"
+        class="bg-white bg-opacity-5 global-transition flex justify-center items-center flex-col h-40 rounded-md overflow-hidden shadow-sm  2xl:h-52 border-white border-2 border-opacity-60 hover:border-opacity-100  ">
+        <svg xmlns="http://www.w3.org/2000/svg" class="mb-2 h-7 w-7 pointer-events-none" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <h2 class="font-bold text-lg pointer-events-none">Add Film</h2>
+      </button>
+    </div>
+  </section>
 
-    <script src="scripts/api.js"></script>
-    <script src="scripts/data.js"></script>
-    <script src="scripts/ui.js"></script>
-    <script src="scripts/app.js"></script>
+  <!-- The core Firebase JS SDK is always required and must be listed first -->
+  <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.4.1/firebase-firestore.js"></script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 
 </html>

@@ -1,23 +1,21 @@
 module.exports = {
-  mode: 'jit',
-  purge: ['index.html', './scripts/*.js'],
-  darkMode: false, // or 'media' or 'class'
+  content: ["./index.html", "./src/**/*.js"],
   theme: {
     extend: {
       fontFamily: {
-        'cabin': ['Cabin, sans-serif'],
+        cabin: ["Cabin, sans-serif"],
       },
       gradientColorStops: {
-        'overlayBlack': 'rgba(0, 0, 0, 0.4)',
+        overlayBlack: "rgba(0, 0, 0, 0.4)",
       },
       backgroundImage: {
-        'watched': "url(icons/ic_eye-watched.svg)",
-        'didntWatch': "url(icons/ic_eye-empty.svg)",
-      }
+        watched: "url(src/assets/icons/ic_eye-watched.svg)",
+        didntWatch: "url(src/assets/icons/ic_eye-empty.svg)",
+      },
     },
   },
   variants: {
     extend: {},
   },
   plugins: [],
-}
+};

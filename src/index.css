@@ -1,0 +1,57 @@
+@import url("https://fonts.googleapis.com/css2?family=Cabin:wght@400;500;600&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+.global-transition {
+  @apply transition-all duration-300 ease-in-out;
+}
+
+.cardEntry:hover #entryCover {
+  @apply scale-110;
+}
+
+.watchToggle.bg-watched {
+  opacity: 1;
+  display: flex;
+}
+
+.watchToggle.bg-didntWatch {
+  opacity: 0;
+  visibility: hidden;
+}
+
+.cardEntry:hover .watchToggle.bg-didntWatch,
+.cardEntry:focus-visible .watchToggle.bg-didntWatch,
+.watchToggle.bg-didntWatch:focus-visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+.cardEntry #entryCover {
+  pointer-events: none;
+}
+
+.cardEntry.editMode #entryCover {
+  pointer-events: auto;
+}
+
+.cardEntry.editMode #entryCover {
+  transform: none;
+}
+
+.cardEntry.editMode .watchToggle,
+.cardEntry.editMode:hover .watchToggle,
+.cardEntry.editMode:focus-visible .watchToggle {
+  visibility: hidden;
+}
